@@ -1,61 +1,89 @@
+#
+# Michał Galant
+#
+
 version: "3"
 
+# sekcja z konfiguracjami usług składowych
 services:
+  # konfiguracja usługi nginx
   nginx:
-    container_name: nginx
+    container_name: nginx # nazwa kontenera
+    # wskazanie folderu i dockerfile do zbudowania tego kontenera
     build:
       context: ./nginx
       dockerfile: Dockerfile
+    # wksazanie powiązania z usługą php
     links:
       - php
+    # ustawienie wolumenu z zawartością strony
     volumes:
       - ./php/:/var/www/html/
+    # przekierowanie portów w kontenerze
     ports:
       - 6666:80
+    # przyłączenie kontenera do sieci frontend i backed
     networks:
       - backend
       - frontend
 
+  # konfiguracja usługi php
   php:
-    container_name: php
+    container_name: php # nazwa kontenera
+    # wskazanie folderu i dockerfile do zbudowania tego kontenera
     build:
       context: ./php
       dockerfile: Dockerfile
+    # wystawienie kontenera na port 9000
     expose:
       - 9000
+    # ustawienie wolumenu z zawartością strony
     volumes:
       - ./php/:/var/www/html/
+    # przyłączenie kontenera do sieci backend
     networks:
       - backend
 
+  # konfiguracja usługi mysql
   mysql:
-    container_name: mysql
+    container_name: mysql # nazwa kontenera
+    # wskazanie folderu i dockerfile do zbudowania tego kontenera
     build:
       context: ./mysql
       dockerfile: Dockerfile
+    # ustawienie zmiennych środowiskowych dla tego kontenera
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: test
+      MYSQL_ROOT_PASSWORD: root # hasło do konta root
+      MYSQL_DATABASE: test # nazwa bazy danych, która ma zostać utworzona
+    # ustawienie przekierowania portów
     ports:
       - 3306:3306
+    # przyłączenie kontenera do sieci backend
     networks:
       - backend
 
+  # konfiguracja usługi phpmyadmin
   phpmyadmin:
-    container_name: phpmyadmin
+    container_name: phpmyadmin # nazwa kontenera
+    # wskazanie folderu i dockerfile do zbudowania tego kontenera
     build:
       context: ./phpmyadmin
       dockerfile: Dockerfile
+    # ustawienie zmiennych środowiskowych dla tego kontenera
     environment:
       - PMA_ARBITRARY=1
-      - PMA_HOST=mysql
+      - PMA_HOST=mysql # nazwa kontenera, który obsługuje usługę mysql
+    # utworzenie połączenia między tym kontenerem a bazą danych z usługi mysql
     links:
       - "mysql:test"
+    # ustawienie przekierowania portów
     ports:
       - 6001:80
+    # przyłączenie kontenera do sieci backend
     networks:
       - backend
 
+# utworzenie sieci backend i frontend
 networks:
   backend:
     driver: bridge
