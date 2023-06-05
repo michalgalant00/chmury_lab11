@@ -1,0 +1,43 @@
+version: "3"
+
+services:
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    ports:
+      - 6666:80
+    networks:
+      - backend
+      - frontend
+
+  php:
+    build:
+      context: ./php
+      dockerfile: Dockerfile
+    networks:
+      - backend
+
+  mysql:
+    build:
+      context: ./mysql
+      dockerfile: Dockerfile
+    ports:
+      - 3306:3306
+    networks:
+      - backend
+
+  phpmyadmin:
+    build:
+      context: ./phpmyadmin
+      dockerfile: Dockerfile
+    ports:
+      - 6001:80
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
+  frontend:
+    driver: bridge
