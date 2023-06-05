@@ -22,6 +22,9 @@ services:
     build:
       context: ./mysql
       dockerfile: Dockerfile
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: test
     ports:
       - 3306:3306
     networks:
@@ -31,6 +34,11 @@ services:
     build:
       context: ./phpmyadmin
       dockerfile: Dockerfile
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=mysql
+    links:
+      - "mysql:test"
     ports:
       - 6001:80
     networks:
