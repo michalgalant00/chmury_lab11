@@ -6,7 +6,7 @@ RUN apk add --no-cache \
     curl \
     && rm -rf /var/cache/apk/*
 
-COPY nginx.conf /etc/nginx/conf.d/
+COPY default.conf /etc/nginx/conf.d/
 
 EXPOSE 6666
 

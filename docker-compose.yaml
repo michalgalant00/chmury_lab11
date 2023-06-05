@@ -2,9 +2,14 @@ version: "3"
 
 services:
   nginx:
+    container_name: nginx
     build:
       context: ./nginx
       dockerfile: Dockerfile
+    links:
+      - php
+    volumes:
+      - ./php/:/var/www/html/
     ports:
       - 6666:80
     networks:
@@ -12,13 +17,19 @@ services:
       - frontend
 
   php:
+    container_name: php
     build:
       context: ./php
       dockerfile: Dockerfile
+    expose:
+      - 9000
+    volumes:
+      - ./php/:/var/www/html/
     networks:
       - backend
 
   mysql:
+    container_name: mysql
     build:
       context: ./mysql
       dockerfile: Dockerfile
@@ -31,6 +42,7 @@ services:
       - backend
 
   phpmyadmin:
+    container_name: phpmyadmin
     build:
       context: ./phpmyadmin
       dockerfile: Dockerfile
